@@ -1,6 +1,4 @@
 """Platform for sensor integration."""
-import decimal
-
 from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.components.recorder import CONF_DB_URL, DEFAULT_URL, DEFAULT_DB_FILE, _LOGGER
 
@@ -26,7 +24,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         _LOGGER.error("Couldn't connect using %s DB_URL: %s", db_url, err)
         return
 
-    add_entities([RainSensor("is really raining", sessionmaker)])
+    add_entities([RainSensor("is raining", sessionmaker)])
 
 
 class RainSensor(BinarySensorDevice):
@@ -38,9 +36,15 @@ class RainSensor(BinarySensorDevice):
         self._is_raining = False
 
     @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
     def is_on(self):
         """Return True if the binary sensor is on."""
         self._update_state()
+        _LOGGER.warning("Is raining? %s", str(self._is_raining))
         return self._is_raining
 
     def _update_state(self):
@@ -62,7 +66,6 @@ class RainSensor(BinarySensorDevice):
                 self._is_raining = True
                 return
 
-
     def _get_data(self):
         """Retrieve sensor data from the query."""
         import sqlalchemy
@@ -79,15 +82,17 @@ class RainSensor(BinarySensorDevice):
 
             data = []
             for res in result:
-                _LOGGER.debug("result = %s", res.items())
                 for key, value in res.items():
-                    if isinstance(value, decimal.Decimal):
+                    try:
                         data.append(float(value))
+                    except:
+                        pass
 
-            return min(data), max(data)
+            if len(data) > 0:
+                return min(data), max(data)
+            return 0, 0
         except sqlalchemy.exc.SQLAlchemyError as err:
             _LOGGER.error("Error executing query %s: %s", query, err)
             return
         finally:
             sess.close()
-
