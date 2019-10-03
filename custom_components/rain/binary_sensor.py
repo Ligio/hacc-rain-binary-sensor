@@ -26,7 +26,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         _LOGGER.error("Couldn't connect using %s DB_URL: %s", db_url, err)
         return
 
-    add_entities([RainSensor(sessionmaker)])
+    add_entities([RainSensor("is really raining", sessionmaker)])
 
 
 class RainSensor(BinarySensorDevice):
