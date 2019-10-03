@@ -44,7 +44,7 @@ class RainSensor(BinarySensorDevice):
     def is_on(self):
         """Return True if the binary sensor is on."""
         self._update_state()
-        _LOGGER.warning("Is raining? %s", str(self._is_raining))
+        _LOGGER.debug("Is raining? %s", str(self._is_raining))
         return self._is_raining
 
     def _update_state(self):
