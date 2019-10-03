@@ -1,0 +1,8 @@
+{
+  "domain": "rain",
+  "name": "Rain sensor",
+  "documentation": "https://github.com/home-assistant/example-custom-config/",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": []
+}
