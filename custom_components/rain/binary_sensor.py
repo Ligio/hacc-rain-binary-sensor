@@ -49,22 +49,10 @@ class RainSensor(BinarySensorDevice):
 
     def _update_state(self):
         min_value, max_value = self._get_data()
-        if self._is_raining:
-            if max_value < 20:
-                self._is_raining = False
-                return
-
-            if max_value < 40 and max_value - min_value < 5:
-                self._is_raining = False
-                return
-        else:
-            if max_value > 40:
-                self._is_raining = True
-                return
-
-            if max_value > 20 and min_value < 10:
-                self._is_raining = True
-                return
+        if self._is_raining and max_value < 1:
+            self._is_raining = False
+        elif not self._is_raining and max_value > 0:
+            self._is_raining = True
 
     def _get_data(self):
         """Retrieve sensor data from the query."""
