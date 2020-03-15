@@ -66,7 +66,7 @@ class RainSensor(BinarySensorDevice):
             if not result.returns_rows or result.rowcount == 0:
                 _LOGGER.warning("%s returned no results", query)
                 self._state = None
-                return
+                return 0, 0
 
             data = []
             for res in result:
@@ -81,6 +81,7 @@ class RainSensor(BinarySensorDevice):
             return 0, 0
         except sqlalchemy.exc.SQLAlchemyError as err:
             _LOGGER.error("Error executing query %s: %s", query, err)
-            return
+            self._state = None
+            return 0, 0
         finally:
             sess.close()
