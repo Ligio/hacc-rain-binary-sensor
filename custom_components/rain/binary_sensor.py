@@ -1,5 +1,9 @@
 """Platform for sensor integration."""
-from homeassistant.components.binary_sensor import BinarySensorDevice
+try:
+    from homeassistant.components.binary_sensor import BinarySensorEntity
+except ImportError:
+    from homeassistant.components.binary_sensor import BinarySensorDevice as BinarySensorEntity
+
 from homeassistant.components.recorder import CONF_DB_URL, DEFAULT_URL, DEFAULT_DB_FILE, _LOGGER
 
 
@@ -27,7 +31,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     add_entities([RainSensor("is raining", sessionmaker)])
 
 
-class RainSensor(BinarySensorDevice):
+class RainSensor(BinarySensorEntity):
     """Representation of a Sensor."""
 
     def __init__(self, name, sessmaker):
